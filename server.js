@@ -14,7 +14,7 @@ app.get('/api/auth', auth, (req, res) => {
     });
   });
 
-// POST
+// Post
 app.post('/api/vacation', (req, res) => {
     const trip = new Trip(req.body);
   
@@ -75,4 +75,41 @@ app.post('/api/vacation', (req, res) => {
             },
           });
         }
+    },
+
+    // Update
+  app.post('/api/vacationUpdate', (req, res) => {
+    Trip.findByIdAndUpdate(req.body._id, req.body, { new: true, runValidators: true }, (err, doc) => {
+      if (err) {
+      return res.status(200).json({
+        success: false,
+        error: err,
+      });
     }
+
+    return res.json({
+      success: true,
+      doc,
+    });
+  });
+});
+
+  app.post('/api/userUpdate', (req, res) => {
+    const { _id, name, lastname, email, oldPassword, newPassword, repeatPassword } = req.body;
+    const fieldsToUpdate = {
+      name,
+      lastname,
+     avatar,
+  };
+
+// Delete
+app.delete('/api/tripDelete', (req, res) => {
+  const { id } = req.query;
+
+  Trip.findByIdAndRemove(id, err => {
+    if (err) return res.status(400).send(err);
+
+    return res.json(true);
+  });
+});
+
