@@ -37,6 +37,11 @@ const mongoose = require.Schema(
       type: Number,
       required: false,
     },
+
+    follow: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );
