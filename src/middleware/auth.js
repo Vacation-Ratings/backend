@@ -1,4 +1,4 @@
-const { User } = require('');
+const { User } = require('../models/user.js');
 
 const auth = (req, res, next) => {
   const token = req.cookies.auth;

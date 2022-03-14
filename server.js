@@ -1,8 +1,14 @@
 'use strict';
 
 const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const app = express();
+const { auth } = require('./src/middleware/auth');
+const { db } = require('./src/models/index');
+const PORT = process.env.PORT || 3000;
 
-// Get
+// Get User
 app.get('/api/auth', auth, (req, res) => {
   res.json({
     isAuth: true,
@@ -14,7 +20,7 @@ app.get('/api/auth', auth, (req, res) => {
   });
 });
 
-// Post
+// Post Blog
 app.post('/api/vacation', (req, res) => {
   const trip = new Trip(req.body);
 
@@ -33,6 +39,7 @@ app.post('/api/vacation', (req, res) => {
   });
 });
 
+// Post New User
 app.post('/api/register', (req, res) => {
   const user = new User(req.body);
 
@@ -50,6 +57,7 @@ app.post('/api/register', (req, res) => {
   });
 });
 
+// Post User Login
 app.post('/api/login', (req, res) => {
   User.findOne({ email: req.body.email }, (err1, user) => {
     if (err1) return res.status(400).send(err1);
@@ -62,36 +70,39 @@ app.post('/api/login', (req, res) => {
         },
       });
     }
+  }),
 
-    user.comparePassword(req.body.password, (err2, isMatch) => {
-      if (err2) return res.status(400).send(err2);
-      if (!isMatch) {
-        return res.json({
-          isAuth: false,
-          error: {
-            field: 'password',
-            message: 'Wrong password',
-          },
-        });
-      }
+  user.comparePassword(req.body.password, (err2, isMatch) => {
+    if (err2) return res.status(400).send(err2);
+    if (!isMatch) {
+      return res.json({
+        isAuth: false,
+        error: {
+          field: 'password',
+          message: 'Wrong password',
+        },
+      });
+    }
+  }),
 
-      user.comparePassword(req.body.password, (err2, isMatch) => {
-        if (err2) return res.status(400).send(err2);
-        if (!isMatch) {
-          return res.json({
-            isAuth: false,
-            error: {
-              field: 'password',
-              message: 'Wrong password',
-            },
-          });
-        }
-    },
+  user.comparePassword(req.body.password, (err2, isMatch) => {
+    if (err2) return res.status(400).send(err2);
+    if (!isMatch) {
+      return res.json({
+        isAuth: false,
+        error: {
+          field: 'password',
+          message: 'Wrong password',
+        },
+      });
+    }
+  })
+})
 
-    // Update
-  app.post('/api/vacationUpdate', (req, res) => {
-    Trip.findByIdAndUpdate(req.body._id, req.body, { new: true, runValidators: true }, (err, doc) => {
-      if (err) {
+// Update Blog
+app.put('/api/vacationUpdate', (req, res) => {
+  Trip.findByIdAndUpdate(req.body._id, req.body, { new: true, runValidators: true }, (err, doc) => {
+    if (err) {
       return res.status(200).json({
         success: false,
         error: err,
@@ -103,24 +114,38 @@ app.post('/api/login', (req, res) => {
       doc,
     });
   });
-});
+}),
 
-  app.post('/api/userUpdate', (req, res) => {
-    const { _id, name, lastname, email, oldPassword, newPassword, repeatPassword } = req.body;
-    const fieldsToUpdate = {
-      name,
-      lastname,
-     avatar,
+// Patch User Update
+app.put('/api/userUpdate', (req, res) => {
+  const { _id, name, lastname, email, oldPassword, newPassword, repeatPassword } = req.body;
+  const fieldsToUpdate = {
+    name,
+    lastname,
+    avatar,
   };
+})
 
-// Delete
+// Delete Blog
 app.delete('/api/tripDelete', (req, res) => {
   const { id } = req.query;
 
   Trip.findByIdAndRemove(id, err => {
-    if (err) return res.status(400).send(err);
-
+  if (err) return res.status(400).send(err);
     return res.json(true);
   });
 });
 
+db.sync().then(() => {
+  server.start(process.env.PORT || 3001);
+});
+
+module.exports = {
+  app,
+  start: (PORT) => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+
+    });
+  },
+};
