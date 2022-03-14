@@ -12,6 +12,7 @@ const mongoose = require.Schema(
         country: {
             type: String,
             required: [true, 'Country is required'],
+            minlength: [4, 'Country should be at least 4 characters'],
         },
 
         description: {
