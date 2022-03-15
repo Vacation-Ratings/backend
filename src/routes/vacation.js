@@ -1,39 +1,38 @@
 'use strict';
 
+const VacationModel = require('../models/vacation.js');
+
 const express = require('express');
-const apiRoutes = express.Router();
+const vacationRoutes = express.Router();
 
-apiRoutes.get('/vacation', handelGetAll);
-apiRoutes.post('/vacation', handleCreate);
-apiRoutes.delete('/vacation', handleDelete);
-apiRoutes.put('/vacation',handleUpdate);
+vacationRoutes.get('/vacation', handleGet);
+vacationRoutes.get('/vacation/:id', handleGet);
+vacationRoutes.post('/vacation', handleCreate);
 
-async function handleGetAll(req, res) {
-    let allVacation = await ListItem.findAll();
-    res.status(200).json(allVacation);
+async function handleGet(req, res) {
+    let queryLocation = {};
+    let queryData = req.params.id;
+    if (queryData) {
+        queryData = { $regex: '' + queryData, $options: 'i' }
+        queryLocation = {location: queryData};
+        let allVacation = await VacationModel.find(queryLocation);
+        if (allVacation.length !== 0) {
+            res.status(200).json(allVacation);
+        } else {
+            queryLocation = {country: queryData};
+            allVacation = await VacationModel.find(queryLocation);
+            res.status(200).json(allVacation);
+        }
+    } else {
+        let allVacation = await VacationModel.find(queryLocation);
+        res.status(200).json(allVacation);
+    }
 }
 
 async function handleCreate(req, res) {
     let obj = req.body;
-    let newTrip = await ListItem.create(obj);
-    console.log(newTrip);
-    res.status(201).json(newTrip);
+    let newVacation = await VacationModel.create(obj);
+    res.status(201).json(newVacation);
 }
 
-async function handleUpdate(req, res) {
-    const id = req.params.id;
-    const obj = req.body;
-    const foundItem = await ListItem.findOne({ where: id });
-    let updatedItem = await foundRecord.update(obj);
-    res.status(200).json(updatedItem);
-}
-
-async function handleDelete(req, res) {
-    let id = req.params.id;
-    let deleteItem = await ListItem.delete({ where: id });
-    res.status(200).json(deleteItem);
-}
-
-module.exports = apiRoutes;
-
-
+module.exports = vacationRoutes;

@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Back end repo for Vacation Ratings",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
     "test": "jest --verbose --coverage",
-    "start": "node server.js"
+    "start": "node src/server.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^2.0.5",
     "mongoose": "^6.2.6",
     "sequelize": "^6.17.0",
     "sqlite3": "^5.0.2"
