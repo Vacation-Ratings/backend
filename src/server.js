@@ -33,14 +33,4 @@ db.once('open', function () {
   });
 });
 
-/* Potential routes:
-POST VACATIONS - Creates a 'vacation' section in our data model
-GET VACATIONS - Return all results found from a query string
-PUT & POST USER - Creates OR Updates an object of a specific user (Data about specific people stored here, who they follow, trip 'blogs' they created, etc.)
-UPDATE USER
-DELETE Blog
-POST Blog
-UPDATE Blog
-*/
-
 app.use(vacationRoutes);
