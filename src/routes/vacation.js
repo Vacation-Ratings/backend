@@ -14,12 +14,12 @@ async function handleGet(req, res) {
     let queryData = req.params.id;
     if (queryData) {
         queryData = { $regex: '' + queryData, $options: 'i' }
-        queryLocation = {location: queryData};
+        queryLocation = { location: queryData };
         let allVacation = await VacationModel.find(queryLocation);
         if (allVacation.length !== 0) {
             res.status(200).json(allVacation);
         } else {
-            queryLocation = {country: queryData};
+            queryLocation = { country: queryData };
             allVacation = await VacationModel.find(queryLocation);
             res.status(200).json(allVacation);
         }
@@ -31,8 +31,10 @@ async function handleGet(req, res) {
 
 async function handleCreate(req, res) {
     let obj = req.body;
+    console.log('THIS IS THE OBJECT =====>>>', obj);
     let newVacation = await VacationModel.create(obj);
     res.status(201).json(newVacation);
+    console.log('THIS IS THE NEW VACATION =====>>>', newVacation);
 }
 
 module.exports = vacationRoutes;
