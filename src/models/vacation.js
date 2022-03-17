@@ -11,6 +11,7 @@ const vacationSchema = new mongoose.Schema({
   rating: { type: Number, required: true, min: 0, max: 5 },
   expences: { type: Number },
   username: { type: String, required: true },
+  imageUrl: { type: String }
 },
   { timestamps: true }
 );
